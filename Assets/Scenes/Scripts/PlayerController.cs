@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private float speed = 15.0f;
+    private float walk = 10.0f;
+    private float sprint = 20.0f;
     private float horizontalInput;
     private float verticalInput;
+    private float mouseXInput;
+    private float mouseYInput;
     
     private Rigidbody rb;
 
@@ -22,6 +25,8 @@ public class PlayerController : MonoBehaviour
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
+        mouseXInput = Input.GetAxis("Mouse X");
+        //mouseYInput = Input.GetAxis("Mouse Y");
 
         if (Input.GetKeyDown(KeyCode.Space))
             jumpInputed = true;
@@ -29,13 +34,24 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.LeftShift))
+        { 
+            transform.Translate(Vector3.forward * Time.deltaTime * sprint * verticalInput); 
+        }
+
+        else 
+        {
+            transform.Translate(Vector3.forward * Time.deltaTime * walk * verticalInput);
+        }
         
-        transform.Translate(Vector3.forward * Time.deltaTime * speed * verticalInput);
-        transform.Translate(Vector3.left * Time.deltaTime * speed * horizontalInput);
+        transform.Translate(Vector3.right * Time.deltaTime * walk * horizontalInput);
+        //transform.Rotate(Vector3.left * mouseYInput * speed);
+        transform.Rotate(Vector3.up * mouseXInput * walk);
+
 
         if (jumpInputed && isGrounded)
         {
-            rb.AddForce(Vector3.up * 7, ForceMode.VelocityChange);
+            rb.AddForce(Vector3.up * 8, ForceMode.Impulse);
             jumpInputed = false;
             isGrounded = false;
         }
@@ -48,4 +64,5 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
         }   
     }
+
 }
